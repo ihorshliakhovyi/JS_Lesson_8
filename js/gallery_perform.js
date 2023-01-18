@@ -9,7 +9,7 @@ const fullImageBox = document.querySelector('.lightbox');
 const fullImage = document.querySelector('.lightbox__image');
 const boxOverlay = document.querySelector('.lightbox__content');
 
-console.log(galleryList); 
+// console.log(galleryList); 
 
 galleryItems.forEach(galleryItems => {
     galleryList.insertAdjacentHTML('beforeend', 
@@ -59,13 +59,24 @@ function closeImageWithEsc(event){
         return;
     };
     closeImage();
+    console.log(boxOverlay);
 };
 
-function closeImageWithOverlay(e){
-    if(e.target !== e.currentTarget){
+function closeImageWithOverlay(event){
+    if(event.target !== event.currentTarget){
         return;
     };
     closeImage();
+  
 };
 
+
+function closeOnimageClick(event){
+    
+    console.log(event);
+};
+
+console.log(fullImage);
+
 boxOverlay.addEventListener('click', closeImageWithOverlay);
+// boxOverlay.addEventListener('click', closeOnimageClick);
