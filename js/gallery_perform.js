@@ -11,28 +11,93 @@ const fullImageBOx = document.querySelector('.lightbox');
 const lightBoxOverlay = document.querySelector('.lightbox__overlay');
 const closeBtn = document.querySelector('button[data-action="close-lightbox"]');
 
-function insertList(){
-  
+
+galleryItems.forEach(item => {
+  galleryList.insertAdjacentHTML(
+    'beforeend',
+    `
+    <li class="gallery__item">
+    <img 
+    class="gallery__image"
+    src="${item.preview}"
+    data-source="${item.original}"
+    alt="${item.description}"
+    >
+    <a 
+    class="gallery__link"
+    href="${item.original}"
+    >
+    <span class="gallery__icon">
+    <i class="material-icons"></i></span>
+    </li>`
+    );
+  });
+
+function openImage({target}){
+   if(target.tagName !== "IMG"){
+    return;
+   };
+   fullImageBOx.classList.add('is-open');
+   fullImage.setAttribute('src', `${target.dataset.source}`);
+   fullImage.setAttribute('alt', `${target.getAttribute('alt')}`);
+   document.addEventListener("keydown", closeImageWithEsc);
+   target.classList.add('active');
 };
 
+galleryList.addEventListener('click', openImage);
+
+function closeImage(){
+  fullImageBOx.classList.remove('is-open');
+  fullImage.setAttribute('alt','')
+};
+
+closeBtn.addEventListener('click', closeImage);
+
+function closeImageWithEsc(event){
+  if(event.code !== 'Escape'){
+    return;
+  };
+  closeImage();
+};
+
+function closeImageWithOverlay(event){
+  if(event.target !== event.currentTarget){
+    return;
+  };
+  closeImage();
+};
+
+lightBoxOverlay.addEventListener('click', closeImageWithOverlay);
+fullImage.addEventListener('click', closeImage);
 
 
+function swipingGalleryImages(event){
+  if(event.code === 'ArrowLeft' || event.code === 'ArrowRight'){
+    const items = document.querySelectorAll('.gallery__image');
+    const itemsArray = Array.from(items);
+    let idx = itemsArray.findIndex(item => item.classList.contains('active'));
+    itemsArray[idx].classList.remove('active');
 
+    if(event.code === 'ArrowLeft'){
+      idx -= 1;
+    };
+    if(event.code === 'ArrowRight'){
+      idx += 1;
+    };
+    if(idx>itemsArray.length-1){
+      idx = 0;
+    };
+    if(idx<0){
+      idx=itemsArray.length-1;
+    };
+    const newImage = itemsArray[idx];
+    newImage.classList.add('active');
+    fullImage.setAttribute('src', `${newImage.dataset.source}`);
+    fullImage.setAttribute('alt', `${newImage.getAttribute('alt')}`);
+  };
+};
 
-console.log(closeBtn);
-
-
-
-
-
-
-
-
-
-
-
-
-
+document.addEventListener('keydown', swipingGalleryImages);
 
 
 
