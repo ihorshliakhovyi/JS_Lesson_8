@@ -7,7 +7,7 @@ const galleryList = document.querySelector('.js-gallery');
 const closeBtn = document.querySelector('button[data-action="close-lightbox"]');
 const fullImageBox = document.querySelector('.lightbox');
 const fullImage = document.querySelector('.lightbox__image');
-const boxOverlay = document.querySelector('.lightbox__content');
+const boxOverlay = document.querySelector('.lightbox__overlay');
 
 // console.log(galleryList); 
 
@@ -41,7 +41,7 @@ function openImage({target}) {
     fullImage.setAttribute('src', `${target.dataset.source}`);
     fullImage.setAttribute('alt', `${target.getAttribute('alt')}`);
     document.addEventListener("keydown", closeImageWithEsc);
-
+    target.classList.add("active");
     // target.classList.add('active');
 };
 
@@ -67,16 +67,40 @@ function closeImageWithOverlay(event){
         return;
     };
     closeImage();
-  
 };
 
 
-function closeOnimageClick(event){
-    
-    console.log(event);
-};
 
-console.log(fullImage);
+
+// console.log(fullImage);
 
 boxOverlay.addEventListener('click', closeImageWithOverlay);
-// boxOverlay.addEventListener('click', closeOnimageClick);
+fullImage.addEventListener('click', closeImageWithOverlay)
+
+function pressNext(event) {
+    console.log(event.code);
+    if (event.code === "ArrowRight" || event.code === "ArrowLeft") {
+      const items = document.querySelectorAll(".gallery__image");
+      const itemsArr = Array.from(items);
+      let idx = itemsArr.findIndex(elem => elem.classList.contains("active"));
+      itemsArr[idx].classList.remove("active");
+      
+      if (event.code === "ArrowRight") {
+        idx += 1;
+      };
+      if (event.code === "ArrowLeft") {
+        idx -= 1;
+      }
+      if (idx < 0) {
+          idx = itemsArr.length -1;
+      }
+      if (idx > itemsArr.length -1) {
+          idx = 0;
+      }
+      const newImage = itemsArr[idx];
+      newImage.classList.add("active");
+      fullImage.setAttribute("src", `${newImage.dataset.source}`);
+      fullImage.setAttribute("alt", `${newImage.getAttribute("alt")}`);
+    }
+  }
+  document.addEventListener("keydown", pressNext);
